@@ -1,47 +1,83 @@
 import React, { useEffect } from 'react';
-import useCarpetasStore from '../../store/store'; // Importa el store de Zustand
-import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
+import useCarpetasStore from '../../store/store';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar/Narbar';
+import './CarpetasComponent.css';
+
 const CarpetasComponent = () => {
   const { carpetas, fetchCarpetas, searchCarpetas, setSearchKeyword } =
     useCarpetasStore();
 
   useEffect(() => {
-    fetchCarpetas(); // Cargar carpetas al montar el componente
+    fetchCarpetas();
   }, [fetchCarpetas]);
 
   const handleSearch = () => {
-    searchCarpetas(); // Realizar búsqueda cuando cambia la palabra clave de búsqueda
+    searchCarpetas();
   };
 
-  // Función para recortar el comentario y mostrar solo las primeras 5 palabras
   const truncateComment = (comment) => {
     const words = comment.split(' ');
-    return words.slice(0, 5).join(' ');
+    return words.slice(0, 3).join(' ');
   };
 
   return (
-    <div>
-      <Navbar></Navbar>
+    <div className='carpetas-container'>
+      <Navbar />
+      <div className='header'>
+        <div className='search-bar'>
+          <input
+            type='text'
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            placeholder='Buscar'
+          />
+          <button onClick={handleSearch}>🔍</button>
+        </div>
 
-      <input type='text' onChange={(e) => setSearchKeyword(e.target.value)} />
-      <button onClick={handleSearch}>Buscar</button>
-      <ul>
-        {carpetas.map((carpeta) => (
-          <li key={carpeta.id}>
-            <div>
-              {/*Link para vincular el nombre de la carpeta a la ruta de detalles */}
-              <Link to={`/carpetas/${carpeta.id}`}>
-                <h3>{carpeta.name}</h3>
-              </Link>
-              {/* Muestra las primeras 5 palabras del comentario */}
-              <p>{truncateComment(carpeta.comment)}</p>
-            </div>
-          </li>
+        <Link to='/crear-carpeta' className='create-button'>
+          <button>+ Crear Nota</button>
+        </Link>
+      </div>
+      <div className='carpetas-grid'>
+        {carpetas.map((carpeta, index) => (
+          <div key={carpeta.id} className='carpeta-card'>
+            <div className='lightning-icon'>⚡</div>{' '}
+            <Link to={`/carpetas/${carpeta.id}`}>
+              <h3 style={{ color: getColor(index) }}>{carpeta.name}</h3>
+              <div className='gradient-box'>
+                <p style={{ color: getColor(index) }}>
+                  {truncateComment(carpeta.comment)}
+                </p>
+              </div>
+              <button className='edit-button'>Ver Nota</button>{' '}
+            </Link>
+          </div>
         ))}
-      </ul>
+      </div>
+
+      <footer>
+        <div>Compañía</div>
+        <div>Comunidad</div>
+        <div>Enlaces útiles</div>
+        <div>Acerca de</div>
+        <div>Discord</div>
+        <div>Ayuda</div>
+        <div className='instagram-icon'>Instagram</div>
+      </footer>
     </div>
   );
 };
+
+function getColor(index) {
+  const colors = [
+    '#00FFFF',
+    '#FFFF00',
+    '#FF0000',
+    '#FF00FF',
+    '#FFFFFF',
+    '#FF00FF',
+  ];
+  return colors[index % colors.length];
+}
 
 export default CarpetasComponent;

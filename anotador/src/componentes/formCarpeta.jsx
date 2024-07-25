@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import useCarpetasStore from '../../store/store';
+import { useNavigate } from 'react-router-dom';
 
 const FormCarpeta = () => {
   const [nombreCarpeta, setNombreCarpeta] = useState('');
   const [nota, setNota] = useState('');
   const { agregarCarpeta } = useCarpetasStore();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,13 +16,11 @@ const FormCarpeta = () => {
       return;
     }
 
-    // Enviar los datos al servidor para crear la carpeta
+    // Enviar los datos al store para crear la carpeta
     agregarCarpeta({ name: nombreCarpeta, comment: nota });
 
     // Redirigir a la página de carpetas después de crear la carpeta
-    // Aquí deberías implementar la navegación programáticamente si es necesario
-    // Ejemplo:
-    // window.location.href = '/';
+    navigate('/');
   };
 
   return (
